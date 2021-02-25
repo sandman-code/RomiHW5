@@ -8,6 +8,7 @@ public:
     void turnAngle(float angle);
     void pauseDriving();
     void resumeDriving();
+    void doDriving();
     float errCoeff = 0.05;
     Chassis();
 
