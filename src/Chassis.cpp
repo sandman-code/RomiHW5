@@ -8,17 +8,13 @@
 
 void Chassis::driveDistance(float inches)
 {
-    encoders.getCountsAndResetLeft();
-    encoders.getCountsAndResetRight();
-
-    while (encoders.getCountsRight() < (inches / (wheelDiameter * PI)) * CPR)
-    {
-        int rightCount = encoders.getCountsRight();
-        int leftCount = encoders.getCountsLeft();
-        int err = rightCount - leftCount;
-        motors.setEfforts(100 - (err * errCoeff), 100 - (err * errCoeff));
-    }
-    motors.setEfforts(0, 0);
+    targetCount = (inches / (wheelDiameter * PI)) * CPR;
+    int rightCount = encoders.getCountsRight();
+    int leftCount = encoders.getCountsLeft();
+    int err = rightCount - leftCount;
+    rightEffort = 100 - (err * errCoeff);
+    leftEffort = 100 - (err * errCoeff);
+    motors.setEfforts(leftEffort, rightEffort);
 }
 
 /** 
@@ -27,17 +23,13 @@ void Chassis::driveDistance(float inches)
 
 void Chassis::turnAngle(float degrees)
 {
-    encoders.getCountsAndResetLeft();
-    encoders.getCountsAndResetRight();
-
-    while (encoders.getCountsLeft() < (((wheelTrack * PI * degrees) / 360) / (wheelDiameter * PI)) * CPR)
-    {
-        int rightCount = encoders.getCountsRight();
-        int leftCount = encoders.getCountsLeft();
-        int err = rightCount - leftCount;
-        motors.setEfforts(100 - (err * errCoeff), -100 - (err * errCoeff));
-    }
-    motors.setEfforts(0, 0);
+    targetCount = (((wheelTrack * PI * degrees) / 360) / (wheelDiameter * PI) * CPR);
+    int rightCount = encoders.getCountsRight();
+    int leftCount = encoders.getCountsLeft();
+    int err = rightCount - leftCount;
+    rightEffort = -100 - (err * errCoeff);
+    leftEffort = 100 - (err * errCoeff);
+    motors.setEfforts(leftEffort, rightEffort);
 }
 
 bool Chassis::doneDriving()
@@ -47,7 +39,11 @@ bool Chassis::doneDriving()
 
 void Chassis::pauseDriving()
 {
-    leftEffort = 0;
-    rightEffort = 0;
+    motors.setEfforts(0, 0);
+    digitalWrite(LED_PIN, 0);
 }
 
+void Chassis::resumeDriving()
+{
+    motors.setEfforts(leftEffort, rightEffort);
+}

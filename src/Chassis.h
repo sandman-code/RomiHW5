@@ -10,11 +10,12 @@ public:
     void resumeDriving();
     void doDriving();
     float errCoeff = 0.05;
+    Romi32U4Motors motors;
+    Romi32U4Encoders encoders;
+    const float LED_PIN = 13;
     Chassis();
 
 private:
-    Romi32U4Motors motors;
-    Romi32U4Encoders encoders;
     int leftEffort, rightEffort;
     const unsigned CPR = 1440;
     const float wheelDiameter = 2.8;
