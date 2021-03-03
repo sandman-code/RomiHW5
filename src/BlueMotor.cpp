@@ -11,6 +11,10 @@ char encoderArray[4][4] = {
     {-1, X, 0, 1},
     {X, 1, -1, 0}};
 
+BlueMotor::BlueMotor()
+{
+}
+
 void BlueMotor::setup()
 {
 
@@ -56,21 +60,19 @@ void BlueMotor::setEffort(int effort)
 
 long BlueMotor::getPosition()
 {
-    isr();
     return count;
 }
 
 void BlueMotor::reset()
 {
-    isr();
     count = 0;
 }
 
 void isr()
 {
 
-    char oldValue = digitalRead(3);
-    char newValue = (digitalRead(3) << 1) | digitalRead(2);
+    int oldValue = digitalRead(3);
+    int newValue = (digitalRead(3) << 1) | digitalRead(2);
     char value = encoderArray[oldValue][newValue];
     if (value == X)
     {

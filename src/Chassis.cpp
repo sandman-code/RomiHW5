@@ -6,6 +6,11 @@
  * 
  * */
 
+Chassis::Chassis()
+{
+
+}
+
 void Chassis::driveDistance(float inches)
 {
     targetCount = (inches / (wheelDiameter * PI)) * CPR;

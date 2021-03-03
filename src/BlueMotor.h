@@ -9,8 +9,6 @@ public:
     long getPosition();
     void reset();
     void setup();
-    long count = 0;
-    int errorCount = 0;
 
 private:
     void setEffort(int effort, bool clockwise);
