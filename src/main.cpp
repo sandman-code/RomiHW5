@@ -3,6 +3,7 @@
 #include "Timer.h"
 #include "IRdecoder.h"
 #include "RemoteConstants.h"
+#include "BlueMotor.h"
 
 Chassis chassis;
 
@@ -10,6 +11,8 @@ Timer blinkingTimer(250);
 IRDecoder decoder(14);
 char lightOn = 0;
 const float LED_PIN = 13;
+Romi32U4ButtonA pb;
+BlueMotor motor;
 
 bool paused = false;
 
@@ -100,7 +103,20 @@ void setup()
 
 void loop()
 {
-  checkRemote();
-  doDriving();
-  doBlinking();
+  //checkRemote();
+  //doDriving();
+  //doBlinking();
+  if (pb.isPressed())
+  {
+    unsigned long endTime = millis() + 100;
+    motor.setEffort(200); // effort test value
+    Serial.println(motor.getPosition());
+    while (millis() < endTime)
+      ;
+  }
+  else
+  {
+    motor.setEffort(0);
+    motor.reset();
+  }
 }
