@@ -4,12 +4,13 @@
 long count = 0;
 int errorCount = 0;
 const char X = 5;
+int oldValue = 0;
 
 char encoderArray[4][4] = {
-    {0, -1, 1, X},
-    {1, 0, X, -1},
-    {-1, X, 0, 1},
-    {X, 1, -1, 0}};
+    {0, 1, -1, X},
+    {-1, 0, X, 1},
+    {1, X, 0, -1},
+    {X, -1, 1, 0}};
 
 BlueMotor::BlueMotor()
 {
@@ -17,12 +18,11 @@ BlueMotor::BlueMotor()
 
 void BlueMotor::setup()
 {
-
     pinMode(0, INPUT);
     pinMode(1, INPUT);
     Serial.begin(9600);
-    attachInterrupt(digitalPinToInterrupt(2), isr, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(3), isr, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(0), isr, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(1), isr, CHANGE);
     pinMode(PWMOutPin, OUTPUT);
     pinMode(AIN1, OUTPUT);
     pinMode(AIN2, OUTPUT);
@@ -42,6 +42,7 @@ void BlueMotor::setEffort(int effort, bool clockwise)
         digitalWrite(AIN1, LOW);
         digitalWrite(AIN2, HIGH);
     }
+
     int value = constrain(effort, 0, 400);
     OCR1C = value;
 }
@@ -68,11 +69,9 @@ void BlueMotor::reset()
     count = 0;
 }
 
-void isr()
+void BlueMotor::isr()
 {
-
-    int oldValue = digitalRead(3);
-    int newValue = (digitalRead(3) << 1) | digitalRead(2);
+    int newValue = (digitalRead(1) << 1) | digitalRead(0);
     char value = encoderArray[oldValue][newValue];
     if (value == X)
     {

@@ -11,11 +11,13 @@ Timer blinkingTimer(250);
 IRDecoder decoder(14);
 char lightOn = 0;
 const float LED_PIN = 13;
-Romi32U4ButtonA pb;
-BlueMotor motor;
+
+Romi32U4ButtonB pb;
+BlueMotor blueMotor;
 
 bool paused = false;
 
+/*
 void doBlinking()
 {
   if (blinkingTimer.isExpired())
@@ -95,28 +97,29 @@ void doDriving()
     break;
   }
 }
+*/
 
 void setup()
 {
-  state = Start;
+  Serial.begin(9600);
+  Serial.println("poop");
+  blueMotor.setup();
+  Serial.println("poop");
 }
 
 void loop()
 {
-  //checkRemote();
-  //doDriving();
-  //doBlinking();
   if (pb.isPressed())
   {
     unsigned long endTime = millis() + 100;
-    motor.setEffort(200); // effort test value
-    Serial.println(motor.getPosition());
+    blueMotor.setEffort(300); // effort test value
+    Serial.println(blueMotor.getPosition());
     while (millis() < endTime)
       ;
   }
   else
   {
-    motor.setEffort(0);
-    motor.reset();
+    blueMotor.setEffort(0);
+    blueMotor.reset();
   }
 }
